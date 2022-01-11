@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>MC! 知恵袋</title>
+<link rel="stylesheet" href="sample.css">
+</head>
+<body>
+
+<!-- コンテンツ表示画面 -->
+
+<div id="text-area">
+    <header>MC! 知恵袋</header>
+    <div>
+        <input type="text" id="uname" placeholder="タイトル">
+    </div>
+    <div id="type-area">
+        <textarea name="" id="text" cols="30" rows="10" placeholder="質問内容"></textarea>
+        <button id="send">送信</button>
+    </div>
+    <div id="output"></div>
+    <div id="reply-area"></div>
+</div>
+
+<!--/ コンテンツ表示画面 -->
+
+
+
+<!-- JQuery -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<!-- JQuery -->
+
+
+<!--** 以下Firebase **-->
+
+<script type="module">
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.2/firebase-app.js";
+    // TODO: Add SDKs for Firebase products that you want to use
+    // https://firebase.google.com/docs/web/setup#available-libraries
+    import { getDatabase, ref, push, set, onChildAdded, remove, onChildRemoved}
+        from "https://cdnjs.cloudflare.com/ajax/libs/firebase/9.6.2/firebase-database.min.js";
+  
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+      apiKey: "",
+      authDomain: "chiebukuro-f78f3.firebaseapp.com",
+      projectId: "chiebukuro-f78f3",
+      storageBucket: "chiebukuro-f78f3.appspot.com",
+      messagingSenderId: "431225609414",
+      appId: "1:431225609414:web:cbea743f90d89305650bc7"
+    };
+  
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app); // RealtimeDBに接続
+    const dbRef = ref(db, "chie"); // RealtimeDB内の""を使う
+
+    $("#send").on("click", function () {
+        const uname=$("#uname").val();
+        const text=$("#text").val();
+        const date1 = new Date();
+        const date2 = date1.getFullYear() + "/" + 
+            (date1.getMonth() + 1)  + "/" + 
+            date1.getDate() + "　" + 
+            date1.getHours() + "時" + 
+            date1.getMinutes() + "分" ;
+        const msg={
+            uname:uname,
+            text:text,
+            date2:date2,
+        }
+        const newPostRef = push(dbRef); // pushできる状態にする
+        set(newPostRef, msg); // DBに値を送信
+        $(function(){$("#uname").val("");});
+        $(function(){$('#text').val("");});
+
+    });
+
+    
+
+    onChildAdded(dbRef, function (data) {
+        const msg = data.val();
+        const key = data.key;
+        let h = '<div id="';
+        h += key;
+        h += '"style="padding-bottom:10px;padding-top:10px;border: 5px solid;margin-top: 30px;margin-bottom: 30px;width:801px;height:600px;overflow:auto;"><p id="'
+        h += key;
+        h +='uname";>タイトル:  ';
+        h += msg.uname;
+        h += '</p>';
+        h += '<p id="'
+        h += key;
+        h +='text">質問内容:  ';
+        h += msg.text;
+        h+='</p><div id="date">時間: ';
+        h+= msg.date2;
+        h+='<button id="';
+        h += key;
+        h += 'reply"style="margin-top:10px;">回答</button>';
+        h += '<button id="';
+        h += key;
+        h += 'delete"style="margin-top:10px;">削除</button></div>';
+        
+        h += '<div id="';
+        h += key;
+        h += 'reply-area2" style="display:flex; flex-flow: column;margin-top:15px;"></div>';
+        h += "</div>";
+
+
+        $("#output").append(h); // #output の最後に追加
+        $("#"+key+"delete").on('click', function () {
+                remove(ref(db, "chie/" + key));
+                $("#"+key).remove();
+            });
+
+            $("#"+key+"reply").on('click', function () {
+            let h = '<textarea name="" id="';
+            h += key;
+            h += 'reply-text" cols="30" rows="10" placeholder="回答内容"style="resize:none;font-family: sans-serif;margin-top:15px;margin-bottom:15px"></textarea>';
+            h += '<button id="';
+            h += key;
+            h += 'send"style="margin-bottom:10px;">送信</button>';
+
+            
+            $("#"+key+"reply-area2").append(h); 
+
+            $("#"+key+"send").on("click", function () {
+            
+            
+            const date3 = new Date();
+            const date4 = date3.getFullYear() + "/" + 
+            (date3.getMonth() + 1)  + "/" + 
+            date3.getDate() + "　" + 
+            date3.getHours() + "時" + 
+            date3.getMinutes() + "分" ;
+
+           
+            location.reload();
+            push(ref(db, "chie/"+key), {
+            newreply: $("#"+key+"reply-text").val(),
+            answerreply: "回答: ",
+            date4:date4,
+            });
+
+            $("#"+key+"reply-text").remove();
+            $("#"+key+"send").remove();         
+            
+        });
+    
+    });  
+
+    onChildAdded(ref(db, "chie/" +key), function (data) {
+        const answer = data.val();
+
+
+        
+
+        $("#"+key+"reply-area2").append(answer.answerreply); 
+        $("#"+key+"reply-area2").append(answer.date4); 
+        let f = '<br>';    
+            $("#"+key+"reply-area2").append(f); 
+
+
+        
+      
+        $("#"+key+"reply-area2").append(answer.newreply); 
+
+        let h = '<p style="margin-top:10px;margin-bottom:10px;"></p>';    
+            $("#"+key+"reply-area2").append(h); 
+    });
+           
+
+});
+            
+       
+
+
+ 
+    
+    
+
+    
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+

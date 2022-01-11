@@ -1,0 +1,102 @@
+
+#output{
+    margin-top: 30px;
+    height:300px;
+    width: 800px;
+    
+    text-align: left;
+    
+    
+}
+
+
+
+button {
+    margin-top: 5px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 0;
+    
+    width: 800px;
+    font-size: 80%;
+    border: 1px solid black;
+    text-align: center;
+  }
+
+  button {
+    list-style-type: none;
+    background-color: #fff;
+    cursor: pointer;
+    color: gray;
+  }
+  button:hover {
+    background: gray;
+    color: #fff;
+  }
+
+
+  #uname {
+    width: 800px;
+    height: 20px;
+    font-size: 80%;
+    margin-bottom: 5px;
+    border: 1px solid black;
+    
+  }
+  #text {
+    width: 800px;
+    height: 100px;
+    font-size: 80%;
+    resize: none;
+    border: 1px solid black;
+  }
+
+  #text-area{
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+  }
+
+
+  #type-area{
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+  }
+
+
+
+  #uname:focus::-webkit-input-placeholder {
+    color: transparent;
+  }
+  #uname:focus::-moz-placeholder {
+    color: transparent;
+  }
+  #uname:focus::-ms-input-placeholder {
+    color: transparent;
+  }
+  #uname:focus::placeholder {
+    color: transparent;
+  }
+  
+  #text{
+    font-family: sans-serif;
+  }
+  
+  #text:focus::-webkit-input-placeholder {
+    color: transparent;
+  }
+  #text:focus::-moz-placeholder {
+    color: transparent;
+  }
+  #text:focus::-ms-input-placeholder {
+    color: transparent;
+  }
+  #text:focus::placeholder {
+    color: transparent;
+  }
+
